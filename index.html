@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8"/>
+        <title>this a vue test</title>
+        <script src="static/vue.js"></script>
+        <script src="https://cdn.staticfile.org/axios/0.18.0/axios.min.js"></script>
+    </head>
+    <style>
+       .class{
+           background: red;     
+       }
+    </style>
+    <body>
+        <div id="app">
+            <P v-if = "seen" v-bind:title="title" >
+                {{msg |capterize}}
+            </P>
+            <p>
+                <button v-on:click="reverse" v-bind:class="'class'" >反转</button>
+            </p>
+            <p>
+                <input type="text" v-model="msg"/>
+            </p>
+            <ul>
+                <li v-for="td in todos">
+                    {{td.text}}
+                </li>
+            </ul>
+            <ol>
+                <cpt v-for="td in todos" v-bind:item="td"></cpt>
+            </ol>
+        </div>
+        <div id="datatest">
+            <table>
+
+               
+                <tr>
+                    <td>序号</td>
+                    <td>应用编号</td>
+                    <td>应用名称</td>
+                    <td>应用描述</td>
+                </tr>
+               
+                <tbody>
+                <tr v-for="td in info">
+                    <td>{{td.id}}</td>
+                    <td>{{td.appCode}}</td>
+                    <td>{{td.appName}}</td>
+                    <td>{{td.appDesc}}</td>
+                </tr>
+            </tbody>
+            </table>
+        </div>
+        <script>
+            Vue.component('cpt',{
+                props:['item'],
+                template:'<li>{{item.text}}</li>'
+            });
+            var app = new Vue({
+                el:'#app',
+                data:{
+                    msg:'hello vue',
+                    title:'页面加载于:' + new Date().toDateString(),
+                    seen:true,
+                    todos:[
+                        {id:1,text:'学习vue'},
+                        {id:2,text:'学习javascript'},
+                        {id:3,text: 'a project'}
+                    ]
+                },
+                methods:{
+                    reverse:function(){
+                        this.msg = this.msg.split('').reverse().join('')
+                    }
+                },
+                filters:{
+                        capterize:function(value){
+                            if (!value) return ''
+                            value = value.toString()
+                            value = value.charAt(0).toUpperCase()+value.slice(1);
+                            return value;
+                        }
+                    
+                }
+            });
+
+            var datatest= new Vue({
+                el:'#datatest',
+                data:{                
+                        info:null
+                        },                    
+                mounted:function() {
+                    axios.get('http://localhost:8000/autodeployApp/list')
+                    .then(response=>this.info = response.data.data)
+                    .catch(function(error){
+                        console.log(error)
+                    })
+                }
+
+            });
+        </script>
+    </body>
+
+</html>
