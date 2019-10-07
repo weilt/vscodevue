@@ -14,10 +14,15 @@
         <h1>vue 实例化容器</h1>
         <router-view></router-view>
     </div>
-
+    <template id="home">
+        <div>
+            <h1>home</h1>
+            <router-view></router-view>
+        </div>
+    </template>
     <script type="text/javascript">
         var Home = {
-            template: '<h1>home</h1>'
+            template: '#home'
         }
         var List = {
             template: '<h1>list {{msg}}</h1>',
@@ -28,13 +33,23 @@
             }
         }
         var Detail = {
-            template: '<h1>detail</h1>'
+            template: '<h1>detail</h1>',
+            created: function () {
+                console.log(this.$route)
+            }
+        }
+        var Page = {
+            template: '<h2>page</h2>'
         }
         var routes = [
             {
                 path: '/home',
                 name: 'home',
-                component: Home
+                component: Home,
+                children: [
+                    { path: 'page', component: Page },
+                    { path: 'search', component: { template: '<h2>search</h2>' } }
+                ]
             },
             {
                 path: '/list',
@@ -45,6 +60,10 @@
                 path: '/detail',
                 name: 'detail',
                 component: Detail
+            },
+            {
+                path: '*',
+                redirect: '/home'
             }
         ]
         // 实例化路由对象
